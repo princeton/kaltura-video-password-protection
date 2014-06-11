@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entry_id: MyString
+  uiconf_id: MyString
+  password_hash: MyString
+  password_salt: MyString
+
+two:
+  entry_id: MyString
+  uiconf_id: MyString
+  password_hash: MyString
+  password_salt: MyString

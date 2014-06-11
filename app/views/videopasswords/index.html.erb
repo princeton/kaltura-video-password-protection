@@ -1,0 +1,22 @@
+<h1>Set Video Password</h1>
+
+<%= form_for :video, url: "insert" do |f| %>
+  <p>
+    <%= f.label :entry_id %><br>
+    <%= f.text_field :entry_id %>
+  </p>
+
+  <p>
+    <%= f.label :uiconf_id %><br>
+    <%= f.text_field :uiconf_id %>
+  </p>
+
+  <p>
+    <%= f.label :password %><br>
+    <%= f.text_field :password_hash %>
+  </p>
+
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
