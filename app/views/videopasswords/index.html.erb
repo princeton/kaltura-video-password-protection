@@ -1,22 +1,36 @@
-<h1>Set Video Password</h1>
+<h1>Assign Password to Video</h1>
 
-<%= form_for :video, url: "insert" do |f| %>
+<%= form_for @video, url: "insert" do |f| %>
+
+  <% if @video.errors.any? %>
+    <p>Errors in previous submission:
+    <ul>
+      <% @video.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+    </p> 
+  <% end %>
+
   <p>
-    <%= f.label :entry_id %><br>
+    <!-- %= f.label :entry_id%><br -->
+    <label>The video's entry_id:</label><br/>
     <%= f.text_field :entry_id %>
   </p>
 
   <p>
-    <%= f.label :uiconf_id %><br>
+    <!-- %= f.label :uiconf_id %><br-->
+    <label>The uiconf_id of the player to be used for playback:</label><br/>
     <%= f.text_field :uiconf_id %>
   </p>
 
   <p>
-    <%= f.label :password %><br>
-    <%= f.text_field :password_hash %>
+    <!-- %= f.label :password %><br -->
+    <label>The password to assign to the video:</label><br/>
+    <%= f.password_field :password_hash %>
   </p>
 
   <p>
-    <%= f.submit %>
+    <%= f.submit "Save password" %>
   </p>
 <% end %>
