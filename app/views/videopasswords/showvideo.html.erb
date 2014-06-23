@@ -4,21 +4,32 @@
   entry_id = params[:entry_id]
   submitted_password = params[:password]
 
-  if entry_id.blank? || submitted_password.blank?
+  # If we have any entry_id, then try looking up the video
+  if ! entry_id.blank?
 
+    # Get the video entry from the local database
+    @video = Video.find_by_entry_id(entry_id)
+
+    # If video was found
+    if @video
+
+      if submitted_password.blank?
+
+        # Show form asking for password
 %>
+<p>
+<form method="post" action="showvideo" accept-charset="UTF-8">
+<label>Enter password to access the video:</label>
+<br>
+<input type="password" name="password"> <br/> <br/>
+<input type="hidden" name="entry_id" value="<%= entry_id %>" >
+<%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+<input type="submit" value="Access Video" name="commit">
+</form>
+</p>
 
-<p>You need to submit a password AND and entry_id!</p>
-
-<% 
-  else 
-
-  # Get the video entry from the local database
-  @video = Video.find_by_entry_id(entry_id)
-
-  # If video was found
-  if @video
-
+<%
+      else
 %>
 <p>
 
@@ -73,10 +84,13 @@ You submitted an incorrect password!
 
 end  # End of password comparison check
 
+end  # Password blank check
+
 else
 %>
 <p>Video could not be found!</p>
 <%
+
 end  # End of not video found check
 
 end  # End of password, entry_id requirement check

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post 'videopasswords/insert'
   get 'videopasswords/confirm'
   get 'videopasswords/showvideo'
+  post 'videopasswords/showvideo'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
