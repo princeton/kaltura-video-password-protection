@@ -32,7 +32,36 @@ class VideopasswordsController < ApplicationController
 
   def showvideo
 
-    # If password in post data is correct, then show video
+    @entry_id = params[:entry_id]
+
+    @video = Video.find_by_entry_id(@entry_id)
+
+    @submitted_password = params[:password]
+
+    if ! @submitted_password.blank?
+
+        @submitted_password_hash = BCrypt::Engine.hash_secret(@submitted_password, @video.password_salt)
+
+        if @submitted_password_hash == @video.password_hash
+
+          # Load the Kaltura client library
+          require_dependency "kaltura_client.rb"
+
+          # Define Kaltura integration settings
+          @partner_id = ENV['KALTURA_PARTNER_ID']
+          admin_secret = ENV['KALTURA_ADMIN_SECRET']
+          user_secret = ""
+          service_url = 'http://www.kaltura.com/'
+
+          # Obtain a Kaltura Session token
+          config = Kaltura::KalturaConfiguration.new(@partner_id, service_url)
+
+          client = Kaltura::KalturaClient.new( config )
+
+          @session = client.session_service.start( admin_secret, 'bcstaff@princeton.edu', Kaltura::KalturaSessionType::ADMIN, @partner_id, 36000)
+
+        end  
+    end
 
   end
 

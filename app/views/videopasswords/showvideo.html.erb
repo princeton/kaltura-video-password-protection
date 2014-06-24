@@ -1,99 +1,50 @@
 <h1>Password Protected Video</h1>
 
 <%
-  entry_id = params[:entry_id]
-  submitted_password = params[:password]
+  # First display display error messages
 
-  # If we have any entry_id, then try looking up the video
-  if ! entry_id.blank?
-
-    # Get the video entry from the local database
-    @video = Video.find_by_entry_id(entry_id)
-
-    # If video was found
-    if @video
-
-      if submitted_password.blank?
-
-        # Show form asking for password
+  if @entry_id.blank?
 %>
-<p>
-<form method="post" action="showvideo" accept-charset="UTF-8">
-<label>Enter password to access the video:</label>
-<br>
-<input type="password" name="password"> <br/> <br/>
-<input type="hidden" name="entry_id" value="<%= entry_id %>" >
-<%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
-<input type="submit" value="Access Video" name="commit">
-</form>
-</p>
+<p>Unable to find video becuase no entry_id was supplied.</p>
+<%
+  elsif ! @video
+%>
+<p>No video found for entry_id = <%= "#{@entry_id}" %></p> 
+<%
+  end
+
+  if ! @submitted_password.blank? and @submitted_password_hash != @video.password_hash
+%>
+<p>Invalid password submitted for video with entry_id = <%= "#{@entry_id}" %></p>
+<%
+  end
+
+  if @submitted_password.blank? or @submitted_password_hash != @video.password_hash
+
+  # Show form asking for password
+%>
+
+<%= render partial: "passwordform", locals: { entry_id: @entry_id } %>
 
 <%
-      else
+  else # Render embed code
 %>
+
 <p>
-
-<% 
-  # Load the Kaltura client library
-  require_dependency "kaltura_client.rb"
-
-  # Define Kaltura integration settings
-  partner_id = ENV['KALTURA_PARTNER_ID']
-  admin_secret = ENV['KALTURA_ADMIN_SECRET']
-  user_secret = ""
-  service_url = 'http://www.kaltura.com/'
-
-  # Obtain a Kaltura Session token
-  config = Kaltura::KalturaConfiguration.new(partner_id, service_url)
-
-  @client = Kaltura::KalturaClient.new( config )
-
-  session = @client.session_service.start( admin_secret, 'bcstaff@princeton.edu', Kaltura::KalturaSessionType::ADMIN, partner_id, 36000)
-  #session = @client.session_service.start( user_secret, 'bcstaff@princeton.edu', Kaltura::KalturaSessionType::USER, partner_id, 36000)
-
-
-  # Compute hash of submitted password
-
-  submitted_password_hash = BCrypt::Engine.hash_secret(submitted_password, @video.password_salt)
-
-  # Compare hash of submitted password with stored password, if same, embed video
-  if submitted_password_hash == @video.password_hash %>
-
   <!-- Generate the embed code using the Kaltura Embed Code Generator JavaScript library.  The library can be downloaded here https://github.com/kaltura/EmbedCodeGenerator -->
   <!-- script src="EmbedCodeGenerator/dist/KalturaEmbedCodeGenerator.js"></script -->
   <%= javascript_include_tag "KalturaEmbedCodeGenerator" %>
   <script>
   var gen = new kEmbedCodeGenerator({
-    partnerId: "<%= "#{partner_id}" %>",
+    partnerId: "<%= "#{@partner_id}" %>",
     uiConfId: "<%= "#{@video.uiconf_id}" %>",
     entryId: "<%= "#{@video.entry_id}" %>",
-    flashVars: {ks: "<%= "#{session}" %>"}
+    flashVars: {ks: "<%= "#{@session}" %>"}
   });
   document.write(gen.getCode());
   </script>
-
 </p>
+
 <%
-
-else
-
+ end
 %>
-You submitted an incorrect password!
-</p>
-<%
-
-end  # End of password comparison check
-
-end  # Password blank check
-
-else
-%>
-<p>Video could not be found!</p>
-<%
-
-end  # End of not video found check
-
-end  # End of password, entry_id requirement check
-
-%>
-
