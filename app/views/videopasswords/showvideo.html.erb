@@ -5,17 +5,17 @@
 
   if @entry_id.blank?
 %>
-<p>Unable to find video becuase no entry_id was supplied.</p>
+<p><b>** Unable to find video because no entry_id was supplied.</b></p>
 <%
   elsif ! @video
 %>
-<p>No video found for entry_id = <%= "#{@entry_id}" %></p> 
+<p><b>** No video found for entry_id = <%= "#{@entry_id}" %></b></p> 
 <%
   end
 
   if ! @submitted_password.blank? and @submitted_password_hash != @video.password_hash
 %>
-<p>Invalid password submitted for video with entry_id = <%= "#{@entry_id}" %></p>
+<p><b>** Invalid password submitted for video with entry_id = <%= "#{@entry_id}" %></b></p>
 <%
   end
 
