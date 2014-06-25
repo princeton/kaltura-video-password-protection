@@ -1,5 +1,7 @@
 class VideopasswordsController < ApplicationController
 
+  before_filter CASClient::Frameworks::Rails::Filter, :except => :showvideo
+
   def index
     @video = Video.new()
   end

@@ -7,6 +7,9 @@ gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'shoulda'
 gem 'rest-client'
 
+# Use CAS to authenticate users
+gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.1'
 # Use sqlite3 for development on my laptop and Postgres for production
