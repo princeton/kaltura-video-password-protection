@@ -8,7 +8,8 @@ gem 'shoulda'
 gem 'rest-client'
 
 # Use CAS to authenticate users
-gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
+gem 'rubycas-client', :git => 'https://github.com/ratliff/rubycas-client.git', :branch => 'rails4-fix'
+#gem 'rubycas-client', :git => 'git://github.com/rubycas/rubycas-client.git'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.1'
