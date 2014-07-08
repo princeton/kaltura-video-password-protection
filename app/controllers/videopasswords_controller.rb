@@ -1,15 +1,19 @@
 class VideopasswordsController < ApplicationController
 
+  # Force CAS authentication for all pages except the showvideo page
   before_filter CASClient::Frameworks::Rails::Filter, :except => :showvideo
 
+  #  Form for creating a new video entry
   def index
     @video = Video.new()
   end
 
+  #  Insert new video information into the database
   def insert
 
-#    Show params values when debugging
-#    render plain: params[:video].inspect
+    #    Show params values when debugging
+    #    render plain: params[:video].inspect
+
     @video = Video.new(video_params)
 
     # Encrypt the password before saving in DB
@@ -32,43 +36,61 @@ class VideopasswordsController < ApplicationController
 
   end
 
+  #  Show a video if, and only if, the appropriate password is submitted
   def showvideo
 
     @entry_id = params[:entry_id]
-
-    @video = Video.find_by_entry_id(@entry_id)
-
     @submitted_password = params[:password]
 
-    if ! @submitted_password.blank?
+    # Retrieve all videos that match the given entry_id
+    @videos = Video.where(:entry_id => @entry_id)
 
-        @submitted_password_hash = BCrypt::Engine.hash_secret(@submitted_password, @video.password_salt)
+    # If we received results then step through them and compare the submitted password with the saved password
+    if ! @videos.empty?
 
-        if @submitted_password_hash == @video.password_hash
+      @videos.each do |v|
 
-          # Load the Kaltura client library
-          require_dependency "kaltura_client.rb"
+        @video = v
 
-          # Define Kaltura integration settings
-          @partner_id = ENV['KALTURA_PARTNER_ID']
-          admin_secret = ENV['KALTURA_ADMIN_SECRET']
-          user_secret = ""
-          service_url = 'http://www.kaltura.com/'
+        if ! @submitted_password.blank?
 
-          # Obtain a Kaltura Session token
-          config = Kaltura::KalturaConfiguration.new(@partner_id, service_url)
+            @submitted_password_hash = BCrypt::Engine.hash_secret(@submitted_password, @video.password_salt)
 
-          client = Kaltura::KalturaClient.new( config )
 
-          @session = client.session_service.start( admin_secret, 'bcstaff@princeton.edu', Kaltura::KalturaSessionType::ADMIN, @partner_id, 36000)
+            if @submitted_password_hash == @video.password_hash
 
-        end  
-    end
+              # Load the Kaltura client library
+              require_dependency "kaltura_client.rb"
+
+              # Define Kaltura integration settings
+              @partner_id = ENV['KALTURA_PARTNER_ID']
+              admin_secret = ENV['KALTURA_ADMIN_SECRET']
+              user_secret = ""
+              service_url = 'http://www.kaltura.com/'
+
+              # Obtain a Kaltura Session token
+              config = Kaltura::KalturaConfiguration.new(@partner_id, service_url)
+
+              client = Kaltura::KalturaClient.new( config )
+
+              @session = client.session_service.start( admin_secret, 'bcstaff@princeton.edu', Kaltura::KalturaSessionType::ADMIN, @partner_id, 36000)
+
+              break # break out of the each loop
+
+            end # end of password match check 
+
+        end # end of password.blank check
+
+      end # end of each loop
+
+    end # end of  ideos.empty check
 
   end
 
+  #  Show confirmation page after successfully saving a new video entry
   def confirm
   end
+
 
   private
     def video_params
