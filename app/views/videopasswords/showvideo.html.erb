@@ -1,7 +1,28 @@
-<h1>Password Protected Video</h1>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a id="pu-logo" href="http://www.princeton.edu">Princeton University</a>
+    <h1>Password Protected Video</h1>
+  </div>
+</header>
+
+<div id="container">
+
+  <div id="content">
+<p>
+This is a BETA service provided as-is by the Office of Information Technology for the convenience of
+customers of the Broadcast Center.
+Although we intend to make this a useful service for customers of the Broadcast Center, we make
+no guarantees concerning this service's performance, availability, or fit for any specific purpose.
+If you have any questions, please contact <a href="mailto:mediacentral@princeton.edu">mediacentral@princeton.edu</a>.
+</p>
 
 <%
-  # First display display error messages
+  # If there were errors, then display the error messages.
 
   if @entry_id.blank?
 %>
@@ -21,16 +42,16 @@
 
   if @submitted_password.blank? or @submitted_password_hash != @video.password_hash
 
-  # Show form asking for password
+  # If there were no errors and the password was not confirmed, then show the password form
 %>
 
 <%= render partial: "passwordform", locals: { entry_id: @entry_id } %>
 
 <%
-  else # Render embed code
+  else # Otherwise, show the video
 %>
 
-<p>
+<p align="center">
   <!-- Generate the embed code using the Kaltura Embed Code Generator JavaScript library.  The library can be downloaded here https://github.com/kaltura/EmbedCodeGenerator -->
   <!-- script src="EmbedCodeGenerator/dist/KalturaEmbedCodeGenerator.js"></script -->
   <%= javascript_include_tag "KalturaEmbedCodeGenerator" %>
@@ -48,3 +69,18 @@
 <%
  end
 %>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-copyright">
+    <p>&copy; 2014 The Trustees of <a href="http://www.princeton.edu">Princeton University</a><br />
+      Princeton, New Jersey 08544</p>
+  </div>
+</footer>
+
+</body>
+</html>
+
