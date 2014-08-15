@@ -7,8 +7,36 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+<header>
+  <div class="header-inner">
+    <a id="pu-logo" href="http://www.princeton.edu">Princeton University</a>
+    <h1>Password Protected Video</h1>
+  </div>
+</header>
+
+<div id="container">
+
+  <div id="content">
+    <p>
+      This is a BETA service provided as-is by the Office of Information Technology for the convenience of
+      customers of the Broadcast Center.
+      Although we intend to make this a useful service for customers of the Broadcast Center, we make
+      no guarantees concerning this service's performance, availability, or fit for any specific purpose.
+      If you have any questions, please contact <a href="mailto:mediacentral@princeton.edu">mediacentral@princeton.edu</a>.
+    </p>
 
 <%= yield %>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-copyright">
+    <p>&copy; 2014 The Trustees of <a href="http://www.princeton.edu">Princeton University</a><br />
+      Princeton, New Jersey 08544</p>
+  </div>
+</footer>
 
 </body>
 </html>
