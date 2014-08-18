@@ -29,7 +29,10 @@ class VideopasswordsController < ApplicationController
 
     #  Attempt to save the video.  If save fails, return to index page
     if @video.save
-      redirect_to "/videopasswords/confirm"
+      # Pass the hostname and port so that the confirmation page can build the URL to the video
+      @host_and_port = request.host_with_port
+
+      render "confirm"
     else
       render "index"
     end
