@@ -65,9 +65,10 @@ class VideopasswordsController < ApplicationController
               # Load the Kaltura client library
               require_dependency "kaltura_client.rb"
 
-              # Define Kaltura integration settings
-              @partner_id = ENV['KALTURA_PARTNER_ID']
-              admin_secret = ENV['KALTURA_ADMIN_SECRET']
+              # Define Kaltura integration settings that are stored in environment variable on the host system
+              @kaltura_partner_id = ENV['KALTURA_PARTNER_ID']
+              kaltura_admin_secret = ENV['KALTURA_ADMIN_SECRET']
+              kaltura_user = ENV['KALTURA_USER']
               user_secret = ""
               service_url = 'http://www.kaltura.com/'
 
@@ -76,7 +77,7 @@ class VideopasswordsController < ApplicationController
 
               client = Kaltura::KalturaClient.new( config )
 
-              @session = client.session_service.start( admin_secret, 'bcstaff@princeton.edu', Kaltura::KalturaSessionType::ADMIN, @partner_id, 36000)
+              @session = client.session_service.start( kaltura_admin_secret, kaltura_user, Kaltura::KalturaSessionType::ADMIN, @kaltura_partner_id, 36000)
 
               break # break out of the each loop
 
